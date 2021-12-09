@@ -20,23 +20,34 @@ namespace MySaladlog.Models
         [Key]
         [Column("idUser")]
         public short IdUser { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "El nombre es requerido")]
         [Column("firstName")]
         [StringLength(50)]
         public string FirstName { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "El apellido es requerido")]
         [Column("lastName")]
         [StringLength(50)]
         public string LastName { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "El nombre de usuario es requerido")]
         [Column("userName")]
         [StringLength(50)]
         public string UserName { get; set; }
-        [Required]
-        [Column("password")]
-        [MaxLength(50)]
-        public byte[] Password { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "La contraseña es requerida")]
+        [Column("Password")]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+
+        [Required(ErrorMessage = "La confirmacion de contraseña es requerida")]
+        [DataType(DataType.Password)]
+        [Compare("Password")]
+        [NotMapped]
+        public string ConfirmPassword { get; set; }
+
+        [Required(ErrorMessage = "El correo electronico es requerido")]
         [Column("email")]
         [StringLength(50)]
         public string Email { get; set; }
