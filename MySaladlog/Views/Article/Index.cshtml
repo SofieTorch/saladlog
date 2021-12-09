@@ -1,0 +1,17 @@
+﻿@using Westwind.AspNetCore.Markdown;
+@{
+    ViewData["Title"] = "Article";
+}
+
+<div class="container">
+    <div class="text-center">
+        <h1>Article</h1>
+    </div>
+
+    <div class="article-container">
+        <div class="article-view">
+            @Markdown.ParseHtmlStringFromFile("~/../AppData/Articles/test.md")
+        </div>
+    </div>
+</div>
+

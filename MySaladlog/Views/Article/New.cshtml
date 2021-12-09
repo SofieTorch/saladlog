@@ -1,0 +1,58 @@
+﻿@model MySaladlog.Models.Article
+@{
+    ViewData["Title"] = "Nuevo artículo";
+}
+
+<div class="row px-5">
+    <div class="col col-lg-2">
+        <h3>Saladlog</h3>
+    </div>
+    <div class="col">
+        Title: @Model.Title
+        <div class="bg-light p-3 border rounded">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home"
+                       role="tab" aria-controls="nav-home" aria-selected="true">
+                        Escribir
+                    </a>
+                    <a class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile"
+                       role="tab" aria-controls="nav-profile" aria-selected="false">
+                        Preview
+                    </a>
+                </div>
+            </nav>
+        </div>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                <div class="mt-4">
+                    <textarea class="form-control" id="inputMdContent" rows="24" asp-for="MdContent"
+                              onkeyup="updatePreview()"></textarea>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <div id="mdPreviewContainer" class="pt-4">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col col-lg-3">
+        <div class="bg-light p-3 rounded">
+            <h4>¿Estás listo para publicar?</h4>
+            Revisa tu artículo y sus tags dos veces antes de publicarlo.
+            <br />
+            <button class="btn btn-outline-primary mt-3"><b>Publicar</b></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const updatePreview = () => {
+        let inputMdContent = document.getElementById("inputMdContent");
+        let mdPreviewContainer = document.getElementById("mdPreviewContainer");
+        let mdContent = inputMdContent.value;
+        mdPreviewContainer.innerHTML = marked.parse(mdContent);
+    }
+
+    window.onload = updatePreview;
+</script>
