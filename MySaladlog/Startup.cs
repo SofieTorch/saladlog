@@ -33,7 +33,7 @@ namespace MySaladlog
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
             services.AddMarkdown();
-
+            services.AddSession();
             services.AddMvc()
                 .AddApplicationPart(typeof(MarkdownPageProcessorMiddleware).Assembly);
         }
@@ -56,6 +56,8 @@ namespace MySaladlog
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseSession();
 
             app.UseAuthorization();
 

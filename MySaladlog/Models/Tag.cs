@@ -18,5 +18,13 @@ namespace MySaladlog.Models
         [Column("tagName")]
         [StringLength(30)]
         public string TagName { get; set; }
+
+        public Tag(short idTag, string tagName)
+        {
+            IdTag = idTag;
+            TagName = tagName;
+        }
     }
+
+   
 }
