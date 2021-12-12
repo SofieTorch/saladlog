@@ -114,6 +114,7 @@ namespace MySaladlog.Models
                 entity.Property(e => e.LastName).IsUnicode(false);
 
                 entity.Property(e => e.Password).IsFixedLength(true);
+                entity.Property(e => e.Password).IsUnicode(false);
 
                 entity.Property(e => e.UserName).IsUnicode(false);
             });

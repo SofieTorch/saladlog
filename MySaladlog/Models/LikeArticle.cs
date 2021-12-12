@@ -12,6 +12,9 @@ namespace MySaladlog.Models
     [Table("Like_Article")]
     public partial class LikeArticle
     {
+        [Key]
+        [Column("idLikeArticle")]
+        public short IdLikeArticle { get; set; }
         [Column("idUser")]
         public short IdUser { get; set; }
         [Column("idArticle")]
