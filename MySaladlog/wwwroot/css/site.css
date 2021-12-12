@@ -83,8 +83,8 @@ body {
 }
 
 .article-view {
-    font-size: 20px;
+    font-size: 19px;
     max-width: 40vw;
-    align-self: center;
+    /*align-self: center;*/
 }
 
