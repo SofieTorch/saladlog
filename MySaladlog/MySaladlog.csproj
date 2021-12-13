@@ -81,8 +81,4 @@
     <None Include="wwwroot\images\5.jpeg" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
 </Project>

@@ -1,8 +1,23 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Http;
+
+@{
+
+    string userName = "";
+    int idUser;
+    bool key = false;
+    List<ArticleDataView> articles = new List<ArticleDataView>();
+    articles = ViewBag.ListArticlesIndex;
+    if (Context.Session.GetString("UserName") != null && Context.Session.GetInt32("IdUser") != null)
+    {
+        userName = Context.Session.GetString("UserName");
+        idUser = (int)Context.Session.GetInt32("IdUser");
+        key = true;
+    }
     ViewData["Title"] = "Home Page";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 
 }
 
-<h1>asdasd</h1>
-
+<div>
+    Aqui tiene que estar la parte del inicio sin sesion facherito
+</div>

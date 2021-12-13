@@ -75,15 +75,25 @@
                     <span class="nav_logo-name">My Saladlog</span>
                 </a>
                 <div class="nav_list">
-                    <a href="#" class="nav_link active">
+                    <a href="#" class="nav_link ">
                         <i class="fas fa-pen"></i>
                         <span class="nav_name">Escribir</span>
                     </a>
-
-                    <a href="#" class="nav_link">
-                        <i class="far fa-newspaper"></i>
-                        <span class="nav_name">Mi feed</span>
-                    </a>
+                    @if (!key)
+                    {
+                        <a asp-controller="Article" asp-action="Feed"  class="nav_link active">
+                            <i class="far fa-newspaper"></i>
+                            <span class="nav_name">Mi feed</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Article" asp-action="Feed"  class="nav_link ">
+                            <i class="far fa-newspaper"></i>
+                            <span class="nav_name">Mi feed</span>
+                        </a>
+                    }
+                    
                     @{
                         if (!key)
                         {
@@ -94,41 +104,39 @@
                             </div>*/
                         }
                     }
-                <div class="overflow-auto" style="  height:400px;">
-                    @{
-                        foreach (var item in tags)
-                        {
-                            <a  asp-controller="Users" asp-action="Edit" asp-route-id="@item.IdTag" class=" tag-style active">
-                                <span class="nav_name">@item.TagName</span>
-                            </a>
+                    <div class="overflow-auto" style="  height:400px;">
+                        @{
+                            foreach (var item in tags)
+                            {
+                                <a asp-controller="Users" asp-action="Edit" asp-route-id="@item.IdTag" class=" tag-style active">
+                                    <span class="nav_name">@item.TagName</span>
+                                </a>
+                            }
+
+
+
                         }
+                    </div>
 
 
-
-                    }
-                </div>
-
-                    
 
 
 
 
                 </div>
             </div>
-            <a href="#" class="nav_link">
+            <a asp-controller="Users" asp-action="SignOuts"  class="nav_link">
                 <i class='bx bx-log-out nav_icon'>
                 </i> <span class="nav_name">SignOut</span>
             </a>
         </nav>
     </div>
-    <div class="height-100 bg-light">
-        <div class="container">
-            <main role="main" class="pb-3">
+    <div style="margin-top: 80px; padding:20px; width:100%" class=" bg-light">
 
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
 
-                @RenderBody()
-            </main>
-        </div>
     </div>
     <footer class="border-top footer text-muted">
         <div class="container">

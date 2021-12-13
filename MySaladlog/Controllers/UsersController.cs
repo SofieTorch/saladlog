@@ -22,6 +22,9 @@ namespace MySaladlog
         [HttpGet]
         public IActionResult Login()
         {
+            List<Tag> tags = _context.Tags.ToList();
+
+            ViewBag.listTags = tags;
             return View();
 
         }
@@ -47,16 +50,17 @@ namespace MySaladlog
             }
             SaveSession(user);
 
-
+            LoadArticleView();
             List<Tag> tags = _context.Tags.ToList();
-           
+
             ViewBag.listTags = tags;
-            return View("~/Views/Home/Index.cshtml");
+            return View("~/Views/Article/Feed.cshtml");
 
         }
         
         public IActionResult Index()
         {
+            LoadArticleView();
             return View("Home");
         }
 
@@ -105,10 +109,34 @@ namespace MySaladlog
 
         public void SaveSession(User user)
         {
-            ViewBag.data = "adasdasddddddd";
+           
             HttpContext.Session.SetString("UserName",user.UserName );
             HttpContext.Session.SetInt32("IdUser", user.IdUser);
 
         }
+        public void DeleteSession()
+        {
+            HttpContext.Session.Clear();
+        }
+
+        public void LoadArticleView()
+        {
+            List<Article> articles = _context.Articles.ToList();
+            List<User> users = _context.Users.ToList();
+
+            var dataArticle = from a in articles
+                              join u in users on a.IdUser equals u.IdUser
+                              select new ArticleDataView(a.CreateDate, a.Title, "Hamas gano combinando una fuerte resistencia contra la ocupacion militar con la creacion de organizaciones sociales de base y de servicio a los pobres, una plataforma y una practica que probablemente haria ganar votos en cualquier lugar. La victoria electoral de Hamas es ominosa pero comprensible, a la luz de los acontecimientos. Es enteramente justo describir a Hamas como fundamentalista, extremista y violentista, y como una seria amenaza a la paz y a un acuerdo politicamente justo. Sin embargo, es útil recordar que en aspectos importantes, Hamas no es tan extremista como otros. Por ejemplo, declara que estaría de acuerdo con una tregua con Israel sobre la base de la frontera reconocida a nivel internacional antes de la guerra arabe-israeli de junio de l967. ..", u.FirstName + " +" + u.LastName);
+                              
+            ViewBag.ListArticlesIndex = dataArticle.ToList();
+        }
+
+
+        public IActionResult SignOuts()
+        {
+            DeleteSession();
+            return View("~/Views/Home/Index.cshtml");
+        }
+
     }
 }
