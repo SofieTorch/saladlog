@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MySaladlog.Controllers
@@ -40,9 +41,10 @@ namespace MySaladlog.Controllers
         public async Task<IActionResult> New(IFormFile file, Article obj)
         {
             string extension = Path.GetExtension(file.FileName);
-            if(extension == ".jpeg" || extension == ".jpg" || extension == ".png")
+            if (extension == ".jpeg" || extension == ".jpg" || extension == ".png")
             {
-                string newFileName = Guid.NewGuid().ToString().Replace('-', '_') + "_" + file.FileName.Replace(' ', '_').Replace('-', '_');
+                string fileNameClean = file.FileName.Replace(' ', '_').Replace('-', '_');
+                string newFileName = Guid.NewGuid().ToString().Replace('-', '_') + "_" + fileNameClean;
                 string saveImg = Path.Combine(_webHost.WebRootPath, "images", newFileName);
                 FileStream stream = new FileStream(saveImg, FileMode.Create);
                 await file.CopyToAsync(stream);
@@ -60,10 +62,41 @@ namespace MySaladlog.Controllers
         }
 
         [HttpPost]
-        public IActionResult PostArticle(Article obj)
+        public async Task<IActionResult> PostArticle(Article obj)
         {
+            string fileName = GetArticleFileName(obj.Title);
+            string filePath = Path.Combine(_webHost.ContentRootPath, "AppData", "Articles", fileName);
+            await System.IO.File.WriteAllTextAsync(filePath, obj.MdContent);
+
+            obj.IdUser = 1; // TODO: Change to current user Id
+            obj.Path = fileName;
+
             _context.Articles.Add(obj);
+            _context.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        private string GetArticleFileName(string articleTitle)
+        {
+            string fileName;
+            int matchingCount;
+            do
+            {
+                string sanitizedTitle = "_" + RemoveInvalidFileNameCharacters(articleTitle).Replace(' ', '_');
+                fileName = Guid.NewGuid().ToString().Replace('-', '_') + sanitizedTitle + ".md";
+                var helper = _context.Articles.Where(article => article.Path == fileName);
+                matchingCount = helper.Count();
+            }
+            while (matchingCount > 0);
+
+            return fileName;
+        }
+
+        private string RemoveInvalidFileNameCharacters(string filename)
+        {
+            string regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+            Regex r = new Regex(string.Format("[{0}]", Regex.Escape(regexSearch)));
+            return r.Replace(filename, "_");
         }
     }
 }
