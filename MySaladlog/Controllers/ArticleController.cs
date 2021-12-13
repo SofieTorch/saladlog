@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -25,9 +26,10 @@ namespace MySaladlog.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(short id = 1)
         {
-            return View();
+            article = _context.Articles.Find(id);
+            return View(article);
         }
 
         public IActionResult New()

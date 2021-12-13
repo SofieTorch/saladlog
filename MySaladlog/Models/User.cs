@@ -15,6 +15,7 @@ namespace MySaladlog.Models
         {
             Articles = new HashSet<Article>();
             Comments = new HashSet<Comment>();
+            LikeArticles = new HashSet<LikeArticle>();
         }
 
         [Key]
@@ -34,7 +35,7 @@ namespace MySaladlog.Models
         public string UserName { get; set; }
         [Required]
         [Column("password")]
-        [MaxLength(50)]
+        [StringLength(50)]
         public string Password { get; set; }
         [Required]
         [Column("email")]
@@ -45,5 +46,7 @@ namespace MySaladlog.Models
         public virtual ICollection<Article> Articles { get; set; }
         [InverseProperty(nameof(Comment.IdUserNavigation))]
         public virtual ICollection<Comment> Comments { get; set; }
+        [InverseProperty(nameof(LikeArticle.IdUserNavigation))]
+        public virtual ICollection<LikeArticle> LikeArticles { get; set; }
     }
 }
