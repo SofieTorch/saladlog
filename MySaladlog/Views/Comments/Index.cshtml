@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewData["Title"] = "Comments";
+}
+
+<h1>Index</h1>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body class="container">
+    <div>
+        <div class="col-6 shadow p-3 mb-5 bg-white rounded">
+            @Html.Partial("_CreateComment")
+            @*Html.Partial("_ViewComments", (IEnumerable<SprintComments.Models.Comments>)ViewBag.Comments)*@
+            @Html.Partial("_ViewComment", (IEnumerable<MySaladlog.Models.CommentUser>)ViewBag.Comments)
+
+
+        </div>
+    </div>
+</body>

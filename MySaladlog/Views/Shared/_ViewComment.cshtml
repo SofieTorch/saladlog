@@ -1,0 +1,20 @@
+﻿@model IEnumerable<MySaladlog.Models.CommentUser>
+<head>
+    <link href="~/wwwroot/css/comment.css" />
+</head>
+
+<div class="overflow-auto" style="height:300px">
+    @Model.Count()
+    <div>
+        @foreach (var item in (IEnumerable<MySaladlog.Models.CommentUser>)ViewBag.Comments)
+        {
+
+            <div class=" shadow p-3 mb-2 bg-white rounded ">
+                @item.Name
+                <div>@item.Comment <br /> @item.Date</div>
+
+            </div>
+        }
+    </div>
+</div>
+
