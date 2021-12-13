@@ -36,6 +36,7 @@ namespace MySaladlog.Models
         [Required]
         [Column("password")]
         [StringLength(50)]
+        [MaxLength(50)]
         public string Password { get; set; }
         [Required]
         [Column("email")]

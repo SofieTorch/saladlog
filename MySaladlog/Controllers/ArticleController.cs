@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 using MySaladlog.Models;
 using System;
 using System.Collections.Generic;
@@ -28,8 +29,50 @@ namespace MySaladlog.Controllers
 
         public IActionResult Index(short id = 1)
         {
-            article = _context.Articles.Find(id);
+            article = _context.Articles
+                .Include(a => a.Comments)
+                .ThenInclude(c => c.IdUserNavigation)
+                .Where(a => a.IdArticle == id).First();
+
             return View(article);
+        }
+        public IActionResult ArticlesByTag(short id)
+        {
+            List<Article> articles = _context.Articles.ToList();
+            List<Tag> tags = _context.Tags.ToList();
+            List<TagArticle> ta = _context.TagArticles.ToList();
+
+            var articlesTag = (from art in articles
+                              join tagart in ta
+                              on art.IdArticle equals tagart.IdArticle
+                              join tag in tags
+                              on tagart.IdTag equals tag.IdTag
+                              where tag.IdTag == id
+                              select art);
+            ViewBag.ArticlesTags = articlesTag;
+            return View();
+        }
+
+        public IActionResult FindArticle(string article)
+        {
+            List<Article> articles = _context.Articles.ToList();
+            var res = (from art in articles
+                      where art.Title == article
+                      select art);
+            ViewBag.FindArt = res;
+            return View();
+        }
+
+        public IActionResult TopAticles()
+        {
+            List<Article> articles = _context.Articles.ToList();
+            List<LikeArticle> likeArt = _context.LikeArticles.ToList();
+
+            var resp = (from art in articles
+                        join la in likeArt 
+                        on art.IdArticle equals la.IdArticle
+                        select art).Take(10);
+            return View();
         }
 
         public IActionResult New()

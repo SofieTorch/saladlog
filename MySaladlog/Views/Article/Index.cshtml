@@ -16,5 +16,9 @@
             @Markdown.ParseHtmlStringFromFile("~/../AppData/Articles/" + Model.Path)
         </div>
     </div>
+
+    @Html.Partial("_CreateComment", new Comment() { IdArticle = Model.IdArticle })
+    @*Html.Partial("_ViewComments", (IEnumerable<SprintComments.Models.Comments>)ViewBag.Comments)*@
+    @await Html.PartialAsync("_ViewComment", (IEnumerable<MySaladlog.Models.Comment>)Model.Comments)
 </div>
 
