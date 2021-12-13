@@ -10,12 +10,12 @@ A blog for people who like (or need) healthy food :)
 To use and run this project follow the nexts steps:
 1. Clone this repo
 2. Inside the repo directory run the commands:  
-	'''
+	"""
 	$ cd MySaladlog
 	$ mkdir AppData
 	$ mkdir AppData/Articles
 	$ mkdir wwwroot/images
-	'''  
+	"""  
 3. Restore database(Sql Server) with the dbSaladlog.sql file
 4. Go to `MySaladlog/appsetting.json` and inside "ConnectionStrings" replace the "DefaultConnection" with your
 own connection string for the database restored on the last step
