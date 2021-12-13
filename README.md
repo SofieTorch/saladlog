@@ -26,4 +26,4 @@ own connection string for the database restored on the last step
 	```  
   
   
-**Authors: ** Andy Guzmán, Carlos Severich, Sofia Toro
+**Authors:** Andy Guzmán, Carlos Severich, Sofia Toro
