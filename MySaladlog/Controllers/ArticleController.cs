@@ -43,14 +43,9 @@ namespace MySaladlog.Controllers
             string extension = Path.GetExtension(file.FileName);
             if (extension == ".jpeg" || extension == ".jpg" || extension == ".png")
             {
-                string fileNameClean = file.FileName.Replace(' ', '_').Replace('-', '_');
-                string newFileName = Guid.NewGuid().ToString().Replace('-', '_') + "_" + fileNameClean;
-                string saveImg = Path.Combine(_webHost.WebRootPath, "images", newFileName);
-                FileStream stream = new FileStream(saveImg, FileMode.Create);
-                await file.CopyToAsync(stream);
-
+                string newFileName = await SaveImage(file);
                 string updatedContent = obj.MdContent + $"  \n![{file.FileName}](../images/{newFileName})  \n";
-                ModelState.SetModelValue("MdContent", new ValueProviderResult(updatedContent, CultureInfo.InvariantCulture));
+                ModelState.SetModelValue("MdContent", new ValueProviderResult(updatedContent));
                 ViewData["Message"] = null;
             }
             else
@@ -97,6 +92,17 @@ namespace MySaladlog.Controllers
             string regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
             Regex r = new Regex(string.Format("[{0}]", Regex.Escape(regexSearch)));
             return r.Replace(filename, "_");
+        }
+
+        private async Task<string> SaveImage(IFormFile file)
+        {
+            string newFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+            newFileName = newFileName.Replace(' ', '_').Replace('-', '_');
+            string filePath = Path.Combine(_webHost.WebRootPath, "images", newFileName);
+
+            FileStream stream = new FileStream(filePath, FileMode.Create);
+            await file.CopyToAsync(stream);
+            return newFileName;
         }
     }
 }
