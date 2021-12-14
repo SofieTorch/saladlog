@@ -89,7 +89,7 @@ namespace MySaladlog.Controllers
             if (extension == ".jpeg" || extension == ".jpg" || extension == ".png")
             {
                 string newFileName = await SaveImage(file);
-                string updatedContent = obj.MdContent + $"  \n![{file.FileName}](../images/{newFileName})  \n";
+                string updatedContent = obj.MdContent + $"  \n![{file.FileName}](../../images/{newFileName})  \n";
                 ModelState.SetModelValue("MdContent", new ValueProviderResult(updatedContent));
                 ViewData["Message"] = null;
             }
