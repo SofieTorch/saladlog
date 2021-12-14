@@ -1,58 +1,125 @@
 ﻿@model MySaladlog.Models.Article
 @{
     ViewData["Title"] = "Nuevo artículo";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+<header>
+    <link href="~/css/newArticle.css" rel="stylesheet" />
+</header>
+<div>
+    <form enctype="multipart/form-data">
+        <div class="row px-5">
+            @*<div class="col col-lg-2">
+                    <h3>Saladlog</h3>
+                </div>*@
+            <div class="col">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Título</label>
+                    <input type="text" class="form-control form-control-lg" id="title"
+                           placeholder="Mi título genial" asp-for="Title" required>
+                </div>
+                <div class="bg-light p-3 border rounded">
+                    <div class="row">
 
-<div class="row px-5">
-    <div class="col col-lg-2">
-        <h3>Saladlog</h3>
-    </div>
-    <div class="col">
-        Title: @Model.Title
-        <div class="bg-light p-3 border rounded">
-            <nav>
-                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home"
-                       role="tab" aria-controls="nav-home" aria-selected="true">
-                        Escribir
-                    </a>
-                    <a class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile"
-                       role="tab" aria-controls="nav-profile" aria-selected="false">
-                        Preview
-                    </a>
+                        <div class="col">
+                            <nav>
+                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                    <a class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home"
+                                       role="tab" aria-controls="nav-home" aria-selected="true">
+                                        Escribir
+                                    </a>
+                                    <a class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile"
+                                       role="tab" aria-controls="nav-profile" aria-selected="false">
+                                        Preview
+                                    </a>
+                                </div>
+                            </nav>
+                        </div>
+
+                        <div class="col-5">
+                            <div class="input-group">
+                                <input class="btn btn-outline-secondary" type="submit"
+                                       formaction="New" formmethod="post" value="Subir" />
+                                <label for="inputFile" class="btn form-control" id="lblFile"
+                                       accept="image/x-png,image/jpeg">
+                                    Agregar imagen
+                                </label>
+                                <input type="file" class="form-control" style="display:none;" id="inputFile" name="file">
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-            </nav>
-        </div>
-        <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                <div class="mt-4">
-                    <textarea class="form-control" id="inputMdContent" rows="24" asp-for="MdContent"
-                              onkeyup="updatePreview()"></textarea>
+
+                <p class="text-danger text-end">@ViewData["Message"]</p>
+
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                        <div class="mt-4">
+                            <textarea class="form-control" id="inputMdContent" rows="24" asp-for="MdContent"
+                                      onkeyup="updatePreview()"></textarea>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                        <div id="mdPreviewContainer" class="pt-4 article-view">
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                <div id="mdPreviewContainer" class="pt-4">
+            <div class="col col-lg-3">
+                <div class="bg-light p-3 rounded">
+                    <h4>¿Estás listo para publicar?</h4>
+                    Revisa tu artículo y sus tags dos veces antes de publicarlo.
+                    <br />
+                    <input class="btn btn-outline-primary mt-3 fw-bold" type="submit"
+                           formaction="PostArticle" formmethod="post" value="Publicar" />
                 </div>
+                <h5 class="mt-3">Tags</h5>
+                <div class="row g-3">
+                    <div class="col">
+                        <label for="exampleDataList" class="form-label">Agrega un tag a tu artículo!</label>
+                        <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search...">
+                        <datalist id="datalistOptions">
+                            <option value="San Francisco" />
+                            <option value="New York" />
+                            <option value="Seattle" />
+                            <option value="Los Angeles" />
+                            <option value="Chicago" />
+                        </datalist>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-3">Agregar</button>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </div>
-    <div class="col col-lg-3">
-        <div class="bg-light p-3 rounded">
-            <h4>¿Estás listo para publicar?</h4>
-            Revisa tu artículo y sus tags dos veces antes de publicarlo.
-            <br />
-            <button class="btn btn-outline-primary mt-3"><b>Publicar</b></button>
-        </div>
-    </div>
+    </form>
+
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
+    let inputFile = document.getElementById("inputFile");
+    let lblFile = document.getElementById("lblFile");
+    let inputMdContent = document.getElementById("inputMdContent");
     const updatePreview = () => {
-        let inputMdContent = document.getElementById("inputMdContent");
         let mdPreviewContainer = document.getElementById("mdPreviewContainer");
         let mdContent = inputMdContent.value;
         mdPreviewContainer.innerHTML = marked.parse(mdContent);
     }
+    const updateFileNameView = () => {
+        let filePath = inputFile.value;
+        let startIndex = (filePath.indexOf('\\') >= 0 ? filePath.lastIndexOf('\\') : filePath.lastIndexOf('/'));
+        let filename = filePath.substring(startIndex);
+        if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
+            filename = filename.substring(1);
+        }
 
-    window.onload = updatePreview;
+        lblFile.innerHTML = filename;
+    }
+    window.onload = () => {
+        updatePreview();
+        inputFile.onchange = updateFileNameView;
+    }
 </script>

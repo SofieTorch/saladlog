@@ -11,6 +11,11 @@ namespace MySaladlog.Models
     [Table("Tag")]
     public partial class Tag
     {
+        public Tag()
+        {
+            TagArticles = new HashSet<TagArticle>();
+        }
+
         [Key]
         [Column("idTag")]
         public short IdTag { get; set; }
@@ -19,11 +24,10 @@ namespace MySaladlog.Models
         [StringLength(30)]
         public string TagName { get; set; }
 
-        public Tag(short idTag, string tagName)
-        {
-            IdTag = idTag;
-            TagName = tagName;
-        }
+
+        [InverseProperty(nameof(TagArticle.IdTagNavigation))]
+        public virtual ICollection<TagArticle> TagArticles { get; set; }
+
     }
 
    

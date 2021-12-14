@@ -32,6 +32,10 @@
                             <a class="btn " style="color: #0B4619" asp-area="" asp-controller="Users" asp-action="Register">Crea una cuenta</a>
                         </li>
                     </ul>
+                    <form asp-controller="FindArticle" >
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
                 </div>
             </div>
 
@@ -39,7 +43,7 @@
 
         
     </header>
-    <div class="container">
+    <div class="">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

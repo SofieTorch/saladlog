@@ -20,11 +20,6 @@ namespace MySaladlog.Controllers
             _context = context;
         }
 
-      
-
-        
-
-
         public IActionResult Index()
         {
             

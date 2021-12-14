@@ -15,6 +15,7 @@ namespace MySaladlog.Models
         {
             Articles = new HashSet<Article>();
             Comments = new HashSet<Comment>();
+            LikeArticles = new HashSet<LikeArticle>();
         }
 
         [Key]
@@ -37,13 +38,17 @@ namespace MySaladlog.Models
         public string UserName { get; set; }
 
         [Required(ErrorMessage = "La contraseña es requerida")]
-        [Column("Password")]
+        [Column("password")]
+        [StringLength(50)]
+        [MaxLength(50)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
         [Required(ErrorMessage = "La confirmacion de contraseña es requerida")]
+        [Compare("password")]
+        [StringLength(50)]
+        [MaxLength(50)]
         [DataType(DataType.Password)]
-        [Compare("Password")]
         [NotMapped]
         public string ConfirmPassword { get; set; }
 
@@ -56,5 +61,7 @@ namespace MySaladlog.Models
         public virtual ICollection<Article> Articles { get; set; }
         [InverseProperty(nameof(Comment.IdUserNavigation))]
         public virtual ICollection<Comment> Comments { get; set; }
+        [InverseProperty(nameof(LikeArticle.IdUserNavigation))]
+        public virtual ICollection<LikeArticle> LikeArticles { get; set; }
     }
 }

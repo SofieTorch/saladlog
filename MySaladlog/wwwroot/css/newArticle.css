@@ -1,0 +1,17 @@
+﻿.article-container {
+    display: flex;
+    justify-content: center;
+}
+
+.article-view p img {
+    display: block;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.article-view {
+    font-size: 19px;
+    max-width: 40vw;
+    /*align-self: center;*/
+}

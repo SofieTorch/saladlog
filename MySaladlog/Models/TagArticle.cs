@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MySaladlog.Models
 {
-    [Keyless]
     [Table("Tag_Article")]
     public partial class TagArticle
     {
@@ -16,10 +15,15 @@ namespace MySaladlog.Models
         public short IdTag { get; set; }
         [Column("idArticle")]
         public short IdArticle { get; set; }
+        [Key]
+        [Column("idTagArticle")]
+        public int IdTagArticle { get; set; }
 
         [ForeignKey(nameof(IdArticle))]
+        [InverseProperty(nameof(Article.TagArticles))]
         public virtual Article IdArticleNavigation { get; set; }
         [ForeignKey(nameof(IdTag))]
+        [InverseProperty(nameof(Tag.TagArticles))]
         public virtual Tag IdTagNavigation { get; set; }
     }
 }

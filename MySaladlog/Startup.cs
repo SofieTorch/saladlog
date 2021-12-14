@@ -29,6 +29,9 @@ namespace MySaladlog
             services.AddDbContext<SaladlogContext>(options => 
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
+            //services.AddDbContext<SaladlogContext>(options =>
+            //    options.UseSqlServer(Configuration["ConnectionString:ApplicationDBConnection"])
+            //);
 
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
