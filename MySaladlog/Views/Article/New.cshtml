@@ -3,8 +3,8 @@
     ViewData["Title"] = "Nuevo artículo";
 }
 
-<form enctype="multipart/form-data">
-    <div class="row px-5">
+<form enctype="multipart/form-data" class="article-editor">
+    <div class="row px-3">
         <div class="col col-lg-2">
             <h3>Saladlog</h3>
         </div>
@@ -13,10 +13,11 @@
                 <label for="title" class="form-label">Título</label>
                 <input type="text" class="form-control form-control-lg" id="title"
                        placeholder="Mi título genial" asp-for="Title" required>
+                <input hidden asp-for="IdArticle"/>
+                <input hidden asp-for="Path"/>
             </div>
             <div class="bg-light p-3 border rounded">
                 <div class="row">
-
                     <div class="col">
                         <nav>
                             <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -35,7 +36,7 @@
                     <div class="col-5">
                         <div class="input-group">
                             <input class="btn btn-outline-secondary" type="submit"
-                                   formaction="New" formmethod="post" value="Subir" />
+                                   formaction="~/Article/New" formmethod="post" value="Subir" />
                             <label for="inputFile" class="btn form-control" id="lblFile"
                                    accept="image/x-png,image/jpeg">
                                 Agregar imagen
@@ -68,28 +69,16 @@
                 Revisa tu artículo y sus tags dos veces antes de publicarlo.
                 <br />
                 <input class="btn btn-outline-primary mt-3 fw-bold" type="submit"
-                       formaction="PostArticle" formmethod="post" value="Publicar" />
+                       formaction="~/Article/PostArticle" formmethod="post" value="Publicar" />
             </div>
-            <h5 class="mt-3">Tags</h5>
-                <label for="exampleDataList" class="form-label">Agrega un tag a tu artículo!</label>
-                <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search...">
-                <datalist id="datalistOptions">
-                    <option value="San Francisco" />
-                    <option value="New York" />
-                    <option value="Seattle" />
-                    <option value="Los Angeles" />
-                    <option value="Chicago" />
-                </datalist>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary mb-3">Agregar</button>
-            </div>
+            <h5 class="mt-3">Agrega un tag a tu artículo</h5>
+            @Html.DropDownListFor(a => a.SelectedTag, new SelectList(ViewBag.tagList, "IdTag", "TagName", Model.SelectedTag), "Ninguno", new { @class = "form-control" })
         </div>
     </div>
 </form>
 
 
 <script>
-
     let inputFile = document.getElementById("inputFile");
     let lblFile = document.getElementById("lblFile");
     let inputMdContent = document.getElementById("inputMdContent");

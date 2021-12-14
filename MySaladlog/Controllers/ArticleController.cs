@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MySaladlog.Models;
 using System;
@@ -75,8 +76,28 @@ namespace MySaladlog.Controllers
             return View();
         }
 
+        public IActionResult Edit(short id = 1)
+        {
+            article = _context.Articles.Find(id);
+            article.IdArticle = id;
+            string path = Path.Combine(_webHost.ContentRootPath, "AppData", "Articles", article.Path);
+            article.MdContent = System.IO.File.ReadAllText(path);
+            return View("New", article);
+        }
+
         public IActionResult New()
         {
+            List<SelectListItem> tagList = _context.Tags.ToList()
+                .ConvertAll(t => new SelectListItem()
+                {
+                    Text = t.TagName,
+                    Value = t.IdTag.ToString(),
+                    Selected = false
+                }
+            );
+
+            ViewBag.tagList = _context.Tags.ToList();
+
             article = new Article();
             article.Title = "Mi título genial";
             return View(article);
@@ -104,16 +125,42 @@ namespace MySaladlog.Controllers
         [HttpPost]
         public async Task<IActionResult> PostArticle(Article obj)
         {
-            string fileName = GetArticleFileName(obj.Title);
-            string filePath = Path.Combine(_webHost.ContentRootPath, "AppData", "Articles", fileName);
-            await System.IO.File.WriteAllTextAsync(filePath, obj.MdContent);
-
             obj.IdUser = 1; // TODO: Change to current user Id
-            obj.Path = fileName;
 
-            _context.Articles.Add(obj);
+            if (obj.IdArticle == 0) await AddArticle(obj);
+            else await SaveArticleChanges(obj);
+
             _context.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { id = obj.IdArticle });
+        }
+
+        [HttpPost]
+        public IActionResult AddTag(Tag tag)
+        {
+            //obj.TagArticles.Add(new TagArticle { IdTagNavigation = tag, IdTag = tag.IdTag });
+            //ModelState.Clear();
+            var tagArticles = ModelState["TagArticles"] as ICollection<TagArticle>;
+            tagArticles.Add(new TagArticle { IdTagNavigation = tag, IdTag = tag.IdTag });
+            //ModelState.SetModelValue("TagArticles", new ValueProviderResult(tagArticles));
+            return View("New");
+        }
+
+        private async Task AddArticle(Article article)
+        {
+            string fileName = GetArticleFileName(article.Title);
+            string filePath = Path.Combine(_webHost.ContentRootPath, "AppData", "Articles", fileName);
+            await System.IO.File.WriteAllTextAsync(filePath, article.MdContent);
+            article.Path = fileName;
+            article.TagArticles.Add(new TagArticle() { IdTag = article.SelectedTag.IdTag });
+            _context.Articles.Add(article);
+        }
+
+        private async Task SaveArticleChanges(Article article)
+        {
+            Article articleDb = _context.Articles.Find(article.IdArticle);
+            articleDb.Title = article.Title;
+            string filePath = Path.Combine(_webHost.ContentRootPath, "AppData", "Articles", article.Path);
+            await System.IO.File.WriteAllTextAsync(filePath, article.MdContent);
         }
 
         private string GetArticleFileName(string articleTitle)

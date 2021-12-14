@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MySaladlog.Models;
 using System;
 using System.Collections.Generic;
@@ -15,9 +16,19 @@ namespace MySaladlog.Controllers
             _context = context;
         }
 
-        public IViewComponentResult Invoke()
+        public IViewComponentResult Invoke(IEnumerable<TagArticle> articleTags)
         {
-            ViewBag.Tags = GetTags();
+            ViewBag.ArticleTags = articleTags;
+
+            List<SelectListItem> tagList = GetTags().ConvertAll(t => new SelectListItem()
+            {
+                Text = t.TagName,
+                Value = t.IdTag.ToString(),
+                Selected = false
+            });
+
+            ViewBag.tagList = tagList;
+
             Tag tag = new Tag();
             return View(tag);
         }

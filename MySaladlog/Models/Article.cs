@@ -48,5 +48,8 @@ namespace MySaladlog.Models
 
         [NotMapped]
         public string MdContent { get; set; } = string.Empty;
+
+        [NotMapped]
+        public Tag SelectedTag { get; set; }
     }
 }
