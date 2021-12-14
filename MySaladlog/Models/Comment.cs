@@ -22,7 +22,7 @@ namespace MySaladlog.Models
         [Column("idUser")]
         public short IdUser { get; set; }
         [Column("dateComment", TypeName = "datetime")]
-        public DateTime DateComment { get; set; }
+        public DateTime DateComment { get; set; } = DateTime.Now;
 
         [ForeignKey(nameof(IdArticle))]
         [InverseProperty(nameof(Article.Comments))]

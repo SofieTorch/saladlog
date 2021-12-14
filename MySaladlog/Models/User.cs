@@ -15,28 +15,44 @@ namespace MySaladlog.Models
         {
             Articles = new HashSet<Article>();
             Comments = new HashSet<Comment>();
+            LikeArticles = new HashSet<LikeArticle>();
         }
 
         [Key]
         [Column("idUser")]
         public short IdUser { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "El nombre es requerido")]
         [Column("firstName")]
         [StringLength(50)]
         public string FirstName { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "El apellido es requerido")]
         [Column("lastName")]
         [StringLength(50)]
         public string LastName { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "El nombre de usuario es requerido")]
         [Column("userName")]
         [StringLength(50)]
         public string UserName { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "La contraseña es requerida")]
         [Column("password")]
+        [StringLength(50)]
         [MaxLength(50)]
-        public byte[] Password { get; set; }
-        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+
+        [Required(ErrorMessage = "La confirmacion de contraseña es requerida")]
+        [Compare("Password")]
+        [StringLength(50)]
+        [MaxLength(50)]
+        [DataType(DataType.Password)]
+        [NotMapped]
+        public string ConfirmPassword { get; set; }
+
+        [Required(ErrorMessage = "El correo electronico es requerido")]
         [Column("email")]
         [StringLength(50)]
         public string Email { get; set; }
@@ -45,5 +61,7 @@ namespace MySaladlog.Models
         public virtual ICollection<Article> Articles { get; set; }
         [InverseProperty(nameof(Comment.IdUserNavigation))]
         public virtual ICollection<Comment> Comments { get; set; }
+        [InverseProperty(nameof(LikeArticle.IdUserNavigation))]
+        public virtual ICollection<LikeArticle> LikeArticles { get; set; }
     }
 }

@@ -1,0 +1,21 @@
+﻿@model MySaladlog.Models.Comment
+
+@{
+    ViewData["Title"] = "Escribir comentario";
+}
+
+
+<h5>Comentarios</h5>
+<form asp-controller="Comments" asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label for="commentContent" class="control-label">Nuevo comentario</label>
+        <textarea asp-for="Comment1" class="form-control" id="commentContent" rows="2"></textarea>
+        <span asp-validation-for="Comment1" class="text-danger"></span>
+    </div>
+    <input asp-for="IdArticle" class="form-control" hidden />
+    <input asp-for="IdUser" hidden value="1" class="form-control" />
+    <div class="form-group">
+        <input type="submit" value="Agregar comentario" class="btn btn-primary mt-2 mb-3" />
+    </div>
+</form>

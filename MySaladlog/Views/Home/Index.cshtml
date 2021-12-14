@@ -1,8 +1,26 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Http;
+
+@{
+
+    string userName = "";
+    int idUser;
+    bool key = false;
+    List<ArticleDataView> articles = new List<ArticleDataView>();
+    articles = ViewBag.ListArticlesIndex;
+    if (Context.Session.GetString("UserName") != null && Context.Session.GetInt32("IdUser") != null)
+    {
+        userName = Context.Session.GetString("UserName");
+        idUser = (int)Context.Session.GetInt32("IdUser");
+        key = true;
+    }
     ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div>
+    <div class="bg-light p-4 text-center">
+        <h1>Bienvenido a Saladlog!</h1>
+        <p>El lugar perfecto para encontrar consejos para una dieta saludable ;)</p>
+    </div>
 </div>

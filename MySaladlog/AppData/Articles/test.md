@@ -1,4 +1,4 @@
-﻿![Cauliflower](images/1.jpeg "Illustration: Ellen Blanctitle")  
+﻿![Cauliflower](../images/1.jpeg "Illustration: Ellen Blanctitle")  
   
 We’re nearing the end of the year, and as such we’re also coming towards the end of this project, 
 which takes its penultimate bow with cauliflower, the mild brassica that also comes in vibrant hues of purple,
@@ -10,7 +10,7 @@ But it’s also something that has enough substance to serve as a stand-in for o
 admittedly I’ve never felt the need to style one into ‘rice’ or some sort of pseudo pizza base, 
 but I appreciate carbohydrates aren’t always everyone’s friends, and for this purpose it does very well indeed.  
   
-![Cauliflower and potato salad](images/2.jpeg "Cauliflower and potato salad with dill, lemon and caper butter, toasted walnuts and deep-fried shallots")  
+![Cauliflower and potato salad](../images/2.jpeg "Cauliflower and potato salad with dill, lemon and caper butter, toasted walnuts and deep-fried shallots")  
   
 That said, I often take advantage of using cauliflower as a replacement for meat, 
 giving bulk and body to dishes where animals are often relied on to do so.
@@ -37,7 +37,7 @@ a domestic setting. Please know, however, that my version below is by no means t
 and merely a take on a concept I think is a fantastic way of making vegetables filling, exciting and stretch a long way.  
   
 
-![Cauliflower hamburguer](images/3.jpeg)  
+![Cauliflower hamburguer](../images/3.jpeg)  
   
 ### *Serves 4*
 * 400g cauliflower florets  
@@ -86,4 +86,4 @@ As they cook, make the chutney by soaking the dates in the boiling water for 10 
 To serve, spread wholegrain mustard on one side of each toasted bun, and top this with the potato and cauliflower patty, 
 followed by fresh coriander and thinly-sliced cucumber. Spread the date and tamarind chutney onto the other half of the bun and place it on top.  
   
-![Serves 4](images/4.jpeg)  
+![Serves 4](../images/4.jpeg)  

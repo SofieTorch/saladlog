@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 #nullable disable
@@ -15,6 +14,8 @@ namespace MySaladlog.Models
         public Article()
         {
             Comments = new HashSet<Comment>();
+            LikeArticles = new HashSet<LikeArticle>();
+            TagArticles = new HashSet<TagArticle>();
         }
 
         [Key]
@@ -40,9 +41,15 @@ namespace MySaladlog.Models
         public virtual User IdUserNavigation { get; set; }
         [InverseProperty(nameof(Comment.IdArticleNavigation))]
         public virtual ICollection<Comment> Comments { get; set; }
+        [InverseProperty(nameof(LikeArticle.IdArticleNavigation))]
+        public virtual ICollection<LikeArticle> LikeArticles { get; set; }
+        [InverseProperty(nameof(TagArticle.IdArticleNavigation))]
+        public virtual ICollection<TagArticle> TagArticles { get; set; }
 
         [NotMapped]
-        [BindProperty]
         public string MdContent { get; set; } = string.Empty;
+
+        [NotMapped]
+        public Tag SelectedTag { get; set; }
     }
 }
