@@ -132,7 +132,7 @@ namespace MySaladlog
 
             var dataArticle = from a in articles
                               join u in users on a.IdUser equals u.IdUser
-                              select new ArticleDataView(a.CreateDate, a.Title, FileContentPath(a.Path), u.FirstName + " " + u.LastName);
+                              select new ArticleDataView(a.IdArticle, a.CreateDate, a.Title, FileContentPath(a.Path), u.FirstName + " " + u.LastName);
 
             ViewBag.ListArticlesFeed = dataArticle.ToList();
         }

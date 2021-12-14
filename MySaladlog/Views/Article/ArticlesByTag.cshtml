@@ -92,7 +92,7 @@
         </span>
     </div>
     <div class="containerFeed">
-        <button class="buttonWriteArticle">
+        <a asp-controller="Article" style="text-decoration:none; color:black;" asp-action="New" class="buttonWriteArticle">
 
             <div class="iconWrite">
                 <i style="width:100%" class="fas fa-pen"></i>
@@ -102,7 +102,7 @@
             </span>
 
 
-        </button>
+        </a>
 
     </div>
     @if (articles.Count > 0)
@@ -144,6 +144,12 @@
                                 12
                             </span>
                         </button>
+                        <a asp-controller="Article" asp-action="Index" asp-route-id="@item.IdArticle" class="buttonFooter">
+                            <i class="fas fa-money-check"></i>
+                            <span>
+                                Leer mas...
+                            </span>
+                        </a>
                     </div>
                 </footer>
             </div>

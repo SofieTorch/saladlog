@@ -4,37 +4,18 @@
     ViewData["Title"] = "Escribir comentario";
 }
 
-<h1>Create</h1>
 
-<h4>Comments</h4>
-<hr />
-<div class="row">
-    <div class="col-md-8">
-        <form asp-controller="Comments" asp-action="Create" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Comment1" class="control-label"></label>
-                <input asp-for="Comment1" class="form-control" />
-                <span asp-validation-for="Comment1" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input asp-for="IdArticle" class="form-control" hidden/>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdUser" class="control-label"></label>
-                <input asp-for="IdUser" class="form-control" />
-                <span asp-validation-for="IdUser" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input asp-for="DateComment" class="form-control" value="@DateTime.Now" hidden/>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<h5>Comentarios</h5>
+<form asp-controller="Comments" asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label for="commentContent" class="control-label">Nuevo comentario</label>
+        <textarea asp-for="Comment1" class="form-control" id="commentContent" rows="2"></textarea>
+        <span asp-validation-for="Comment1" class="text-danger"></span>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <input asp-for="IdArticle" class="form-control" hidden />
+    <input asp-for="IdUser" hidden value="1" class="form-control" />
+    <div class="form-group">
+        <input type="submit" value="Agregar comentario" class="btn btn-primary mt-2 mb-3" />
+    </div>
+</form>

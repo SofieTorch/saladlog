@@ -12,6 +12,7 @@ a {
   color: #0366d6;
 }
 
+
 .btn-primary {
   color: #fff;
   background-color: #1b6ec2;
@@ -29,6 +30,7 @@ a {
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
+
 
 /* Sticky footer styles
 -------------------------------------------------- */
@@ -101,6 +103,9 @@ body {
     font-weight: 700;
 }
 
+.article-view .article-comments {
+    font-size: medium;
+}
 
 @media (max-width: 768px) {
     .article-view img {

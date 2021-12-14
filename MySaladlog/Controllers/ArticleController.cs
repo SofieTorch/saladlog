@@ -30,8 +30,10 @@ namespace MySaladlog.Controllers
             _context = context;
         }
 
-        public IActionResult Index(short id = 1)
+        public IActionResult Index(short id)
         {
+            List<Tag> tags = _context.Tags.ToList();
+            ViewBag.listTags = tags;
             article = _context.Articles
                 .Include(a => a.Comments)
                 .ThenInclude(c => c.IdUserNavigation)
@@ -51,7 +53,7 @@ namespace MySaladlog.Controllers
             var dataArticle = from a in articles
                               join u in users on a.IdUser equals u.IdUser
                               where a.Title.Equals(article)
-                              select new ArticleDataView(a.CreateDate, a.Title, FileContentPath(a.Path), u.FirstName + " " + u.LastName);
+                              select new ArticleDataView(a.IdArticle, a.CreateDate, a.Title, FileContentPath(a.Path), u.FirstName + " " + u.LastName);
             ViewBag.ListArticlesFeed = dataArticle.ToList();
             
 
@@ -100,11 +102,13 @@ namespace MySaladlog.Controllers
         [HttpPost]
         public async Task<IActionResult> New(IFormFile file, Article obj)
         {
+            List<Tag> tags = _context.Tags.ToList();
+            ViewBag.listTags = tags;
             string extension = Path.GetExtension(file.FileName);
             if (extension == ".jpeg" || extension == ".jpg" || extension == ".png")
             {
                 string newFileName = await SaveImage(file);
-                string updatedContent = obj.MdContent + $"  \n![{file.FileName}](../images/{newFileName})  \n";
+                string updatedContent = obj.MdContent + $"  \n![{file.FileName}](../../images/{newFileName})  \n";
                 ModelState.SetModelValue("MdContent", new ValueProviderResult(updatedContent));
                 ViewData["Message"] = null;
             }
@@ -119,16 +123,13 @@ namespace MySaladlog.Controllers
         [HttpPost]
         public async Task<IActionResult> PostArticle(Article obj)
         {
-            string fileName = GetArticleFileName(obj.Title);
-            string filePath = Path.Combine(_webHost.ContentRootPath, "AppData", "Articles", fileName);
-            await System.IO.File.WriteAllTextAsync(filePath, obj.MdContent);
-
-            obj.IdUser = 1; // TODO: Change to current user Id
-            obj.Path = fileName;
+            obj.IdUser = (short)HttpContext.Session.GetInt32("IdUser"); // TODO: Change to current user Id
+            if (obj.IdArticle == 0) await AddArticle(obj);
+            else await SaveArticleChanges(obj);
 
             _context.Articles.Add(obj);
             _context.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { id= obj.IdArticle });
         }
 
         private string GetArticleFileName(string articleTitle)
@@ -181,7 +182,7 @@ namespace MySaladlog.Controllers
                                on tagart.IdTag equals tag.IdTag
                                join u in users on art.IdUser equals u.IdUser
                                where tag.IdTag == id
-                               select new ArticleDataView(art.CreateDate, art.Title, FileContentPath(art.Path), u.FirstName + " " + u.LastName));
+                               select new ArticleDataView(art.IdArticle,art.CreateDate, art.Title, FileContentPath(art.Path), u.FirstName + " " + u.LastName));
             ViewBag.ListArticlesFeed = articlesTag.ToList() ;
 
            
@@ -207,7 +208,7 @@ namespace MySaladlog.Controllers
 
             var dataArticle = from a in articles
                               join u in users on a.IdUser equals u.IdUser
-                              select new ArticleDataView(a.CreateDate, a.Title, FileContentPath(a.Path), u.FirstName + " " + u.LastName);
+                              select new ArticleDataView(a.IdArticle,a.CreateDate, a.Title, FileContentPath(a.Path), u.FirstName + " " + u.LastName);
 
             ViewBag.ListArticlesFeed = dataArticle.ToList();
         }
@@ -217,6 +218,35 @@ namespace MySaladlog.Controllers
             string data = System.IO.File.ReadAllText(filePath);
             return data;
         }
+
+        public IActionResult Edit(short id = 1)
+        {
+            List<Tag> tags = _context.Tags.ToList();
+            ViewBag.listTags = tags;
+            article = _context.Articles.Find(id);
+            article.IdArticle = id;
+            string path = Path.Combine(_webHost.ContentRootPath, "AppData", "Articles", article.Path);
+            article.MdContent = System.IO.File.ReadAllText(path);
+            return View("New", article);
+        }
+
+        private async Task AddArticle(Article article)
+        {
+            string fileName = GetArticleFileName(article.Title);
+            string filePath = Path.Combine(_webHost.ContentRootPath, "AppData", "Articles", fileName);
+            await System.IO.File.WriteAllTextAsync(filePath, article.MdContent);
+            article.Path = fileName;
+            _context.Articles.Add(article);
+        }
+
+        private async Task SaveArticleChanges(Article article)
+        {
+            Article articleDb = _context.Articles.Find(article.IdArticle);
+            articleDb.Title = article.Title;
+            string filePath = Path.Combine(_webHost.ContentRootPath, "AppData", "Articles", article.Path);
+            await System.IO.File.WriteAllTextAsync(filePath, article.MdContent);
+        }
+       
 
 
     }

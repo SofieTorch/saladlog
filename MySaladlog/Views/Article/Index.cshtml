@@ -1,9 +1,12 @@
 ﻿@using Westwind.AspNetCore.Markdown;
 @model MySaladlog.Models.Article;
 @{
-    ViewData["Title"] = "Article";
+    ViewData["Title"] = "Info Articulo";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
-
+<header>
+    <link href="~/css/newArticle.css" rel="stylesheet" />
+</header>
 <div class="container-md">
     <div class="article-container">
         <div class="article-title mt-2 mb-4 fs-1">
@@ -14,11 +17,14 @@
     <div class="article-container">
         <div class="article-view">
             @Markdown.ParseHtmlStringFromFile("~/../AppData/Articles/" + Model.Path)
+
+            <hr class="mt-5 mb-4"/>
+            <div class="article-comments">
+                @await Html.PartialAsync("_CreateComment", new Comment() { IdArticle = Model.IdArticle })
+                @await Html.PartialAsync("_ViewComment", (IEnumerable<MySaladlog.Models.Comment>)Model.Comments)
+            </div>
         </div>
     </div>
 
-    @Html.Partial("_CreateComment", new Comment() { IdArticle = Model.IdArticle })
-    @*Html.Partial("_ViewComments", (IEnumerable<SprintComments.Models.Comments>)ViewBag.Comments)*@
-    @await Html.PartialAsync("_ViewComment", (IEnumerable<MySaladlog.Models.Comment>)Model.Comments)
 </div>
 
