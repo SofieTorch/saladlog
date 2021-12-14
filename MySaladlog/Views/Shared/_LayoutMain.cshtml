@@ -50,8 +50,8 @@
             @{
                 if (key)
                 {
-                    <a style=" margin: 0 10px" class="btn btn-outline-dark" asp-area="" asp-controller="Users" asp-action="Login">Iniciar Sesión</a>
-                    <a class="btn btn-green" style="background-color: #519259; color:white " asp-area="" asp-controller="Users" asp-action="Register">Crea una cuenta</a>
+                    <a style=" margin: 0 10px" class="btn btn-outline-dark"  asp-controller="Users" asp-action="Login">Iniciar Sesión</a>
+                    <a class="btn btn-green" style="background-color: #519259; color:white " asp-controller="Users" asp-action="Register">Crea una cuenta</a>
 
                 }
 
@@ -75,7 +75,7 @@
                     <span class="nav_logo-name">My Saladlog</span>
                 </a>
                 <div class="nav_list">
-                    <a href="#" class="nav_link ">
+                    <a asp-controller="Article" asp-action="New"  class="nav_link ">
                         <i class="fas fa-pen"></i>
                         <span class="nav_name">Escribir</span>
                     </a>

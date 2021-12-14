@@ -45,7 +45,7 @@ namespace MySaladlog.Models
         public string Password { get; set; }
 
         [Required(ErrorMessage = "La confirmacion de contraseña es requerida")]
-        [Compare("password")]
+        [Compare("Password")]
         [StringLength(50)]
         [MaxLength(50)]
         [DataType(DataType.Password)]

@@ -79,9 +79,29 @@ namespace MySaladlog.Controllers
 
         public IActionResult New()
         {
-            article = new Article();
-            article.Title = "Mi título genial";
-            return View(article);
+            if(VerificationSession())
+            {
+                article = new Article();
+                article.Title = "Mi título genial";
+                List<Tag> tags = _context.Tags.ToList();
+                ViewBag.listTags = tags;
+                return View(article);
+            }
+            else
+            {
+
+                return RedirectToAction("Login","Users");
+            }
+            
+        }
+
+        public bool VerificationSession()
+        {
+            bool key = false;
+            if (HttpContext.Session.GetString("UserName") != null && HttpContext.Session.GetInt32("IdUser") != null)
+                key = true;
+
+            return key;
         }
 
         [HttpPost]
@@ -179,6 +199,8 @@ namespace MySaladlog.Controllers
 
         public void LoadArticleView()
         {
+            List<Tag> tags = _context.Tags.ToList();
+            ViewBag.listTags = tags;
             List<Article> articles = _context.Articles.ToList();
             List<User> users = _context.Users.ToList();
 
