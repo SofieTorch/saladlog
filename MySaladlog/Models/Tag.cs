@@ -24,7 +24,11 @@ namespace MySaladlog.Models
         [StringLength(30)]
         public string TagName { get; set; }
 
+
         [InverseProperty(nameof(TagArticle.IdTagNavigation))]
         public virtual ICollection<TagArticle> TagArticles { get; set; }
+
     }
+
+   
 }

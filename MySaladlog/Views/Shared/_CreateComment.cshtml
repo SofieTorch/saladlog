@@ -13,12 +13,8 @@
         <textarea asp-for="Comment1" class="form-control" id="commentContent" rows="2"></textarea>
         <span asp-validation-for="Comment1" class="text-danger"></span>
     </div>
-    <input asp-for="IdArticle" class="form-control" hidden/>
-    <div class="form-group">
-        <label asp-for="IdUser" class="control-label"></label>
-        <input asp-for="IdUser" class="form-control" />
-        <span asp-validation-for="IdUser" class="text-danger"></span>
-    </div>
+    <input asp-for="IdArticle" class="form-control" hidden />
+    <input asp-for="IdUser" hidden value="1" class="form-control" />
     <div class="form-group">
         <input type="submit" value="Agregar comentario" class="btn btn-primary mt-2 mb-3" />
     </div>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using MySaladlog.Models;
 using System;
 using System.Collections.Generic;
@@ -19,13 +20,37 @@ namespace MySaladlog.Controllers
         [HttpPost]
         public IActionResult Create(Comment comments)
         {
-            if (ModelState.IsValid)
+            if (VerificationSession())
             {
-                _context.Comments.Add(comments);
-                _context.SaveChanges();
+                if (ModelState.IsValid)
+                {
+                    if (HttpContext.Session.GetString("UserName") != null && HttpContext.Session.GetInt32("IdUser") != null)
+                    {
+                        comments.IdUser = (short)HttpContext.Session.GetInt32("IdUser");
+                        _context.Comments.Add(comments);
+                        _context.SaveChanges();
+                    }
+
+
+                }
+
+                return RedirectToAction("Index", "Article", new { id = comments.IdArticle });
+            }
+            else
+            {
+
+                return RedirectToAction("Login", "Users");
             }
 
-            return RedirectToAction("Index", "Article", new { id = comments.IdArticle });
+        }
+
+        public bool VerificationSession()
+        {
+            bool key = false;
+            if (HttpContext.Session.GetString("UserName") != null && HttpContext.Session.GetInt32("IdUser") != null)
+                key = true;
+
+            return key;
         }
     }
 }

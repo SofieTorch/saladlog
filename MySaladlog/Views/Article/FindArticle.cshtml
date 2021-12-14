@@ -1,0 +1,169 @@
+﻿@using Microsoft.AspNetCore.Http;
+@using Westwind.AspNetCore.Markdown;
+@{
+
+    string userName = "";
+    int idUser;
+    bool key = false;
+    List<ArticleDataView> articles = new List<ArticleDataView>();
+    articles = ViewBag.ListArticlesFeed;
+    if (Context.Session.GetString("UserName") != null && Context.Session.GetInt32("IdUser") != null)
+    {
+        userName = Context.Session.GetString("UserName");
+        idUser = (int)Context.Session.GetInt32("IdUser");
+        key = true;
+    }
+    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+
+}
+<head>
+    <link href="/css/feet.css" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/0c46749f9f.js" crossorigin="anonymous"></script>
+    <style>
+        .containerFeed {
+            box-shadow: 0px 0px 8px 0.5px #f0f0f0;
+            width: 70%;
+            max-width: 1000px;
+            background-color: white;
+            margin: 20px auto;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+            .containerFeed span {
+                display: flex;
+                width: 100%
+            }
+
+            .containerFeed .headerTitleFeed {
+                font-size: 30px;
+                font-weight: 600
+            }
+
+            .containerFeed .subtitleFeed {
+                color: #808080
+            }
+
+        .iconWrite {
+            background-color: white;
+            border-radius: 50px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            border-width: 0.01px;
+            border-color: #908a8a;
+            border-style: solid;
+            margin: 10px
+        }
+
+        .buttonWriteArticle {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            background-color: rgba(245,247,250);
+            border-radius: 10px;
+            border-width: 0.01px;
+            border-color: #908a8a;
+            border-style: solid;
+            padding: 20px;
+        }
+
+        .buttonFooter {
+            border: none;
+            background-color: white;
+            font-size: 15px;
+            margin-right: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<div>
+    <div class="containerFeed">
+        <span class="headerTitleFeed">
+            Feed de la comunidad
+        </span>
+        <span class="subtitleFeed">
+            Artículos recientes de la comunidad
+        </span>
+    </div>
+    <div class="containerFeed">
+        <a asp-controller="Article" style="text-decoration:none; color:black;" asp-action="New" class="buttonWriteArticle">
+
+            <div class="iconWrite">
+                <i style="width:100%" class="fas fa-pen"></i>
+            </div>
+            <span style="font-size:20px; width:auto; font-weight:600">
+                Escribir un artículo
+            </span>
+
+
+        </a>
+
+    </div>
+    @if (articles.Count > 0)
+    {
+        foreach (var item in articles)
+        {
+            <div class="contenedor border">
+                <header class="headers">
+                    <img class="avatar" src="https://i.pinimg.com/originals/0c/3b/3a/0c3b3adb1a7530892e55ef36d3be6cb8.png">
+                    <div class="header-user-data">
+                        <h5 class="userName">
+                            @item.NameUserComment
+                        </h5>
+                        <h5 class="datePublication">@item.DateCreate.ToString("D")</h5>
+                    </div>
+
+                </header>
+
+                <main class="contenido">
+                    <h1>@item.Title</h1>
+                    <span>
+                        @*@Markdown.ParseHtmlStringFromFile("~/../AppData/Articles/" + item.Content).Value*@
+                        @item.Content
+                    </span>
+                </main>
+
+
+                <footer class="footer">
+                    <div>
+                        <button class="buttonFooter">
+                            <i class="far fa-thumbs-up"></i>
+                            <span>
+                                12
+                            </span>
+                        </button>
+                        <button class="buttonFooter">
+                            <i class="far fa-comment-dots"></i>
+                            <span>
+                                12
+                            </span>
+                        </button>
+                        <a asp-controller="Article" asp-action="Index" asp-route-id="@item.IdArticle" class="buttonFooter">
+                            <i class="fas fa-money-check"></i>
+                            <span>
+                                Leer mas...
+                            </span>
+                        </a>
+                    </div>
+                </footer>
+            </div>
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+</div>
+

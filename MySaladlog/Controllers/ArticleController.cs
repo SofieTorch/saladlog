@@ -13,13 +13,16 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Westwind.AspNetCore.Markdown;
+
 
 namespace MySaladlog.Controllers
 {
     public class ArticleController : Controller
     {
-        private readonly IWebHostEnvironment _webHost;
+
         private readonly SaladlogContext _context;
+        private readonly IWebHostEnvironment _webHost;
         Article article;
 
         public ArticleController(IWebHostEnvironment webHost, SaladlogContext context)
@@ -28,8 +31,10 @@ namespace MySaladlog.Controllers
             _context = context;
         }
 
-        public IActionResult Index(short id = 1)
+        public IActionResult Index(short id)
         {
+            List<Tag> tags = _context.Tags.ToList();
+            ViewBag.listTags = tags;
             article = _context.Articles
                 .Include(a => a.Comments)
                 .ThenInclude(c => c.IdUserNavigation)
@@ -37,30 +42,22 @@ namespace MySaladlog.Controllers
 
             return View(article);
         }
-        public IActionResult ArticlesByTag(short id)
-        {
-            List<Article> articles = _context.Articles.ToList();
-            List<Tag> tags = _context.Tags.ToList();
-            List<TagArticle> ta = _context.TagArticles.ToList();
 
-            var articlesTag = (from art in articles
-                              join tagart in ta
-                              on art.IdArticle equals tagart.IdArticle
-                              join tag in tags
-                              on tagart.IdTag equals tag.IdTag
-                              where tag.IdTag == id
-                              select art);
-            ViewBag.ArticlesTags = articlesTag;
-            return View();
-        }
 
         public IActionResult FindArticle(string article)
         {
+            List<Tag> tags = _context.Tags.ToList();
+            ViewBag.listTags = tags;
             List<Article> articles = _context.Articles.ToList();
-            var res = (from art in articles
-                      where art.Title == article
-                      select art);
-            ViewBag.FindArt = res;
+            List<User> users = _context.Users.ToList();
+
+            var dataArticle = from a in articles
+                              join u in users on a.IdUser equals u.IdUser
+                              where a.Title.Equals(article)
+                              select new ArticleDataView(a.IdArticle, a.CreateDate, a.Title, FileContentPath(a.Path), u.FirstName + " " + u.LastName);
+            ViewBag.ListArticlesFeed = dataArticle.ToList();
+            
+
             return View();
         }
 
@@ -78,6 +75,8 @@ namespace MySaladlog.Controllers
 
         public IActionResult Edit(short id = 1)
         {
+            List<Tag> tags = _context.Tags.ToList();
+            ViewBag.listTags = tags;
             article = _context.Articles.Find(id);
             article.IdArticle = id;
             string path = Path.Combine(_webHost.ContentRootPath, "AppData", "Articles", article.Path);
@@ -87,25 +86,36 @@ namespace MySaladlog.Controllers
 
         public IActionResult New()
         {
-            List<SelectListItem> tagList = _context.Tags.ToList()
-                .ConvertAll(t => new SelectListItem()
-                {
-                    Text = t.TagName,
-                    Value = t.IdTag.ToString(),
-                    Selected = false
-                }
-            );
+            if(VerificationSession())
+            {
+                article = new Article();
+                article.Title = "Mi título genial";
+                List<Tag> tags = _context.Tags.ToList();
+                ViewBag.listTags = tags;
+                return View(article);
+            }
+            else
+            {
 
-            ViewBag.tagList = _context.Tags.ToList();
+                return RedirectToAction("Login","Users");
+            }
+            
+        }
 
-            article = new Article();
-            article.Title = "Mi título genial";
-            return View(article);
+        public bool VerificationSession()
+        {
+            bool key = false;
+            if (HttpContext.Session.GetString("UserName") != null && HttpContext.Session.GetInt32("IdUser") != null)
+                key = true;
+
+            return key;
         }
 
         [HttpPost]
         public async Task<IActionResult> New(IFormFile file, Article obj)
         {
+            List<Tag> tags = _context.Tags.ToList();
+            ViewBag.listTags = tags;
             string extension = Path.GetExtension(file.FileName);
             if (extension == ".jpeg" || extension == ".jpg" || extension == ".png")
             {
@@ -125,24 +135,13 @@ namespace MySaladlog.Controllers
         [HttpPost]
         public async Task<IActionResult> PostArticle(Article obj)
         {
-            obj.IdUser = 1; // TODO: Change to current user Id
 
+            obj.IdUser = (short)HttpContext.Session.GetInt32("IdUser");
             if (obj.IdArticle == 0) await AddArticle(obj);
             else await SaveArticleChanges(obj);
 
             _context.SaveChanges();
             return RedirectToAction("Index", new { id = obj.IdArticle });
-        }
-
-        [HttpPost]
-        public IActionResult AddTag(Tag tag)
-        {
-            //obj.TagArticles.Add(new TagArticle { IdTagNavigation = tag, IdTag = tag.IdTag });
-            //ModelState.Clear();
-            var tagArticles = ModelState["TagArticles"] as ICollection<TagArticle>;
-            tagArticles.Add(new TagArticle { IdTagNavigation = tag, IdTag = tag.IdTag });
-            //ModelState.SetModelValue("TagArticles", new ValueProviderResult(tagArticles));
-            return View("New");
         }
 
         private async Task AddArticle(Article article)
@@ -151,7 +150,6 @@ namespace MySaladlog.Controllers
             string filePath = Path.Combine(_webHost.ContentRootPath, "AppData", "Articles", fileName);
             await System.IO.File.WriteAllTextAsync(filePath, article.MdContent);
             article.Path = fileName;
-            article.TagArticles.Add(new TagArticle() { IdTag = article.SelectedTag.IdTag });
             _context.Articles.Add(article);
         }
 
@@ -195,6 +193,57 @@ namespace MySaladlog.Controllers
             FileStream stream = new FileStream(filePath, FileMode.Create);
             await file.CopyToAsync(stream);
             return newFileName;
+        }
+
+        public int idPublic;
+        public IActionResult ArticlesByTag(short id)
+
+        {
+            List<Article> articles = _context.Articles.ToList();
+            List<Tag> tags = _context.Tags.ToList();
+            List<TagArticle> ta = _context.TagArticles.ToList();
+            List<User> users = _context.Users.ToList();
+
+            var articlesTag = (from art in articles
+                               join tagart in ta
+                               on art.IdArticle equals tagart.IdArticle
+                               join tag in tags
+                               on tagart.IdTag equals tag.IdTag
+                               join u in users on art.IdUser equals u.IdUser
+                               where tag.IdTag == id
+                               select new ArticleDataView(art.IdArticle,art.CreateDate, art.Title, FileContentPath(art.Path), u.FirstName + " " + u.LastName));
+            ViewBag.ListArticlesFeed = articlesTag.ToList() ;
+
+           
+            ViewBag.listTags = tags;
+            return View();
+        }
+
+     
+        public IActionResult Feed()
+        {
+            LoadArticleView();
+            return View();
+        }
+
+        public void LoadArticleView()
+        {
+            List<Tag> tags = _context.Tags.ToList();
+            ViewBag.listTags = tags;
+            List<Article> articles = _context.Articles.ToList();
+            List<User> users = _context.Users.ToList();
+
+            var dataArticle = from a in articles
+                              join u in users on a.IdUser equals u.IdUser
+                              select new ArticleDataView(a.IdArticle,a.CreateDate, a.Title, FileContentPath(a.Path), u.FirstName + " " + u.LastName);
+
+            ViewBag.ListArticlesFeed = dataArticle.ToList();
+        }
+        protected string FileContentPath(string fileName)
+        {
+            string filePath = Path.Combine(_webHost.ContentRootPath, "AppData", "Articles", fileName);
+            string data = System.IO.File.ReadAllText(filePath);
+            return data;
         }
     }
 }

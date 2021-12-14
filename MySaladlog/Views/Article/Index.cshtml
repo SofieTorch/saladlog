@@ -1,9 +1,12 @@
 ﻿@using Westwind.AspNetCore.Markdown;
 @model MySaladlog.Models.Article;
 @{
-    ViewData["Title"] = "Article";
+    ViewData["Title"] = "Info Articulo";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
-
+<header>
+    <link href="~/css/newArticle.css" rel="stylesheet" />
+</header>
 <div class="container-md">
     <div class="article-container">
         <div class="article-title mt-2 mb-4 fs-1">
