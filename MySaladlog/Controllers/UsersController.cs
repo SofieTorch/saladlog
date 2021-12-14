@@ -58,8 +58,7 @@ namespace MySaladlog
             List<Tag> tags = _context.Tags.ToList();
 
             ViewBag.listTags = tags;
-            return View("~/Views/Article/Feed.cshtml");
-
+            return RedirectToAction("Feed", "Article");
         }
 
         public IActionResult Index()
@@ -132,7 +131,7 @@ namespace MySaladlog
 
             var dataArticle = from a in articles
                               join u in users on a.IdUser equals u.IdUser
-                              select new ArticleDataView(a.IdArticle, a.CreateDate, a.Title, FileContentPath(a.Path), u.FirstName + " " + u.LastName);
+                              select new ArticleDataView(a.IdArticle, a.CreateDate, a.Title, FileContentPath(a.Path), u.FirstName + " " + u.LastName, a.IdUser);
 
             ViewBag.ListArticlesFeed = dataArticle.ToList();
         }
@@ -147,7 +146,7 @@ namespace MySaladlog
         public IActionResult SignOuts()
         {
             DeleteSession();
-            return View("~/Views/Home/Index.cshtml");
+            return RedirectToAction("Index", "Home");
         }
 
     }

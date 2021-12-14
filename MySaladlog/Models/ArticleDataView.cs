@@ -12,19 +12,21 @@ namespace MySaladlog.Models
         public string Title { get; set; }
         public string Content { get; set; }
         public string NameUserComment { get; set; }
+        public short IdUser { get; set; }
 
         public ArticleDataView()
         {
 
         }
 
-        public ArticleDataView(short idArticle, DateTime dateCreate, string title, string content, string nameUserComment)
+        public ArticleDataView(short idArticle, DateTime dateCreate, string title, string content, string nameUserComment, short idUser)
         {
             IdArticle = idArticle;
             DateCreate = dateCreate;
             Title = title;
             Content = content;
             NameUserComment = nameUserComment;
+            IdUser = idUser;
         }
     }
 }

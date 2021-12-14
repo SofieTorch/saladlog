@@ -53,8 +53,8 @@ namespace MySaladlog.Controllers
 
             var dataArticle = from a in articles
                               join u in users on a.IdUser equals u.IdUser
-                              where a.Title.Equals(article)
-                              select new ArticleDataView(a.IdArticle, a.CreateDate, a.Title, FileContentPath(a.Path), u.FirstName + " " + u.LastName);
+                              where a.Title.ToLower().Contains(article.ToLower())
+                              select new ArticleDataView(a.IdArticle, a.CreateDate, a.Title, FileContentPath(a.Path), u.FirstName + " " + u.LastName, a.IdUser);
             ViewBag.ListArticlesFeed = dataArticle.ToList();
             
 
@@ -77,11 +77,17 @@ namespace MySaladlog.Controllers
         {
             List<Tag> tags = _context.Tags.ToList();
             ViewBag.listTags = tags;
+
             article = _context.Articles.Find(id);
-            article.IdArticle = id;
-            string path = Path.Combine(_webHost.ContentRootPath, "AppData", "Articles", article.Path);
-            article.MdContent = System.IO.File.ReadAllText(path);
-            return View("New", article);
+            if(article.IdUser == (short)HttpContext.Session.GetInt32("IdUser"))
+            {
+                article.IdArticle = id;
+                string path = Path.Combine(_webHost.ContentRootPath, "AppData", "Articles", article.Path);
+                article.MdContent = System.IO.File.ReadAllText(path);
+                return View("New", article);
+            }
+
+            return RedirectToAction("Feed");
         }
 
         public IActionResult New()
@@ -96,10 +102,8 @@ namespace MySaladlog.Controllers
             }
             else
             {
-
                 return RedirectToAction("Login","Users");
             }
-            
         }
 
         public bool VerificationSession()
@@ -135,7 +139,6 @@ namespace MySaladlog.Controllers
         [HttpPost]
         public async Task<IActionResult> PostArticle(Article obj)
         {
-
             obj.IdUser = (short)HttpContext.Session.GetInt32("IdUser");
             if (obj.IdArticle == 0) await AddArticle(obj);
             else await SaveArticleChanges(obj);
@@ -211,7 +214,7 @@ namespace MySaladlog.Controllers
                                on tagart.IdTag equals tag.IdTag
                                join u in users on art.IdUser equals u.IdUser
                                where tag.IdTag == id
-                               select new ArticleDataView(art.IdArticle,art.CreateDate, art.Title, FileContentPath(art.Path), u.FirstName + " " + u.LastName));
+                               select new ArticleDataView(art.IdArticle,art.CreateDate, art.Title, FileContentPath(art.Path), u.FirstName + " " + u.LastName, art.IdUser));
             ViewBag.ListArticlesFeed = articlesTag.ToList() ;
 
            
@@ -235,7 +238,7 @@ namespace MySaladlog.Controllers
 
             var dataArticle = from a in articles
                               join u in users on a.IdUser equals u.IdUser
-                              select new ArticleDataView(a.IdArticle,a.CreateDate, a.Title, FileContentPath(a.Path), u.FirstName + " " + u.LastName);
+                              select new ArticleDataView(a.IdArticle,a.CreateDate, a.Title, FileContentPath(a.Path), u.FirstName + " " + u.LastName, a.IdUser);
 
             ViewBag.ListArticlesFeed = dataArticle.ToList();
         }

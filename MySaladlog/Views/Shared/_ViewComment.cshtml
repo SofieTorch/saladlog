@@ -8,8 +8,8 @@ Comentarios: @Model.Count()
     @foreach (var item in Model)
     {
         <div class="p-3 mb-2 bg-light rounded">
-            @item.IdUserNavigation.FirstName @item.IdUserNavigation.LastName
-            <div>@item.Comment1 <br /> @item.DateComment</div>
+            <b>@item.IdUserNavigation.FirstName @item.IdUserNavigation.LastName</b>
+            <div>@item.Comment1 <br /> <i>@item.DateComment</i></div>
         </div>
     }
 </div>

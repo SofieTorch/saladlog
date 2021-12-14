@@ -3,7 +3,7 @@
 @{
 
     string userName = "";
-    int idUser;
+    int idUser = 0;
     bool key = false;
     List<ArticleDataView> articles = new List<ArticleDataView>();
     articles = ViewBag.ListArticlesFeed;
@@ -17,6 +17,7 @@
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 
 }
+
 <head>
     <link href="/css/feet.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/0c46749f9f.js" crossorigin="anonymous"></script>
@@ -125,7 +126,6 @@
                     <main class="contenido">
                         <h1>@item.Title</h1>
                         <span>
-                            @*@Markdown.ParseHtmlStringFromFile("~/../AppData/Articles/" + item.Content).Value*@
                             @item.Content
                         </span>
                     </main>
@@ -151,6 +151,15 @@
                                     Leer mas...
                                 </span>
                             </a>
+                            @if (idUser == item.IdUser)
+                            {
+                                <a asp-controller="Article" asp-action="Edit" asp-route-id="@item.IdArticle" class="buttonFooter">
+                                    <i class="fas fa-pen"></i>
+                                    <span>
+                                        Editar
+                                    </span>
+                                </a>
+                            }
                         </div>
                     </footer>
                 </div>

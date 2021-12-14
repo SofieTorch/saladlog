@@ -204,10 +204,12 @@ a {
     text-align: center;
 }
 
-    .tag-style:hover {
-        color: #519259;
-    }
+.tag-style:hover {
+    color: #519259;
+}
 
-
+.article-view .article-comments {
+    font-size: medium;
+}
 
 
