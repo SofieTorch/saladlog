@@ -47,10 +47,14 @@
             <div class="header_img">
                 <img src="/images/lettuce.png" alt="">
             </div>
+            <form asp-controller="Article" asp-action="FindArticle" style="display:flex;">
+                <input name="article" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button  class="btn btn-outline-success" type="submit">Search</button>
+            </form>
             @{
                 if (key)
                 {
-                    <a style=" margin: 0 10px" class="btn btn-outline-dark"  asp-controller="Users" asp-action="Login">Iniciar Sesión</a>
+                    <a style=" margin: 0 10px" class="btn btn-outline-dark" asp-controller="Users" asp-action="Login">Iniciar Sesión</a>
                     <a class="btn btn-green" style="background-color: #519259; color:white " asp-controller="Users" asp-action="Register">Crea una cuenta</a>
 
                 }
@@ -108,13 +112,10 @@
                         @{
                             foreach (var item in tags)
                             {
-                                <a asp-controller="Users" asp-action="Edit" asp-route-id="@item.IdTag" class=" tag-style active">
+                                <a asp-controller="Article" asp-action="ArticlesByTag" asp-route-id="@item.IdTag" class=" tag-style active">
                                     <span class="nav_name">@item.TagName</span>
                                 </a>
                             }
-
-
-
                         }
                     </div>
 

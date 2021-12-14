@@ -12,6 +12,8 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Westwind.AspNetCore.Markdown;
+
 
 namespace MySaladlog.Controllers
 {
@@ -37,31 +39,22 @@ namespace MySaladlog.Controllers
 
             return View(article);
         }
-        public IActionResult ArticlesByTag(short id)
 
-        {
-            List<Article> articles = _context.Articles.ToList();
-            List<Tag> tags = _context.Tags.ToList();
-            List<TagArticle> ta = _context.TagArticles.ToList();
-
-            var articlesTag = (from art in articles
-                              join tagart in ta
-                              on art.IdArticle equals tagart.IdArticle
-                              join tag in tags
-                              on tagart.IdTag equals tag.IdTag
-                              where tag.IdTag == id
-                              select art);
-            ViewBag.ArticlesTags = articlesTag;
-            return View();
-        }
 
         public IActionResult FindArticle(string article)
         {
+            List<Tag> tags = _context.Tags.ToList();
+            ViewBag.listTags = tags;
             List<Article> articles = _context.Articles.ToList();
-            var res = (from art in articles
-                      where art.Title == article
-                      select art);
-            ViewBag.FindArt = res;
+            List<User> users = _context.Users.ToList();
+
+            var dataArticle = from a in articles
+                              join u in users on a.IdUser equals u.IdUser
+                              where a.Title.Equals(article)
+                              select new ArticleDataView(a.CreateDate, a.Title, FileContentPath(a.Path), u.FirstName + " " + u.LastName);
+            ViewBag.ListArticlesFeed = dataArticle.ToList();
+            
+
             return View();
         }
 
@@ -171,24 +164,32 @@ namespace MySaladlog.Controllers
             await file.CopyToAsync(stream);
             return newFileName;
         }
-        /*public IActionResult ArticlesByTag(short id)
+
+        public int idPublic;
+        public IActionResult ArticlesByTag(short id)
+
         {
             List<Article> articles = _context.Articles.ToList();
             List<Tag> tags = _context.Tags.ToList();
             List<TagArticle> ta = _context.TagArticles.ToList();
-
-
+            List<User> users = _context.Users.ToList();
 
             var articlesTag = (from art in articles
                                join tagart in ta
                                on art.IdArticle equals tagart.IdArticle
                                join tag in tags
                                on tagart.IdTag equals tag.IdTag
+                               join u in users on art.IdUser equals u.IdUser
                                where tag.IdTag == id
-                               select art);
-            ViewBag.ListArticlesIndex = articlesTag;
+                               select new ArticleDataView(art.CreateDate, art.Title, FileContentPath(art.Path), u.FirstName + " " + u.LastName));
+            ViewBag.ListArticlesFeed = articlesTag.ToList() ;
+
+           
+            ViewBag.listTags = tags;
             return View();
-        }*/
+        }
+
+     
 
 
         public IActionResult Feed()
@@ -206,10 +207,17 @@ namespace MySaladlog.Controllers
 
             var dataArticle = from a in articles
                               join u in users on a.IdUser equals u.IdUser
-                              select new ArticleDataView(a.CreateDate, a.Title, "Hamas gano combinando una fuerte resistencia contra la ocupacion militar con la creacion de organizaciones sociales de base y de servicio a los pobres, una plataforma y una practica que probablemente haria ganar votos en cualquier lugar. La victoria electoral de Hamas es ominosa pero comprensible, a la luz de los acontecimientos. Es enteramente justo describir a Hamas como fundamentalista, extremista y violentista, y como una seria amenaza a la paz y a un acuerdo politicamente justo. Sin embargo, es útil recordar que en aspectos importantes, Hamas no es tan extremista como otros. Por ejemplo, declara que estaría de acuerdo con una tregua con Israel sobre la base de la frontera reconocida a nivel internacional antes de la guerra arabe-israeli de junio de l967. ..", u.FirstName + " " + u.LastName);
+                              select new ArticleDataView(a.CreateDate, a.Title, FileContentPath(a.Path), u.FirstName + " " + u.LastName);
 
-            ViewBag.ListArticlesIndex = dataArticle.ToList();
+            ViewBag.ListArticlesFeed = dataArticle.ToList();
         }
+        protected string FileContentPath(string fileName)
+        {
+            string filePath = Path.Combine(_webHost.ContentRootPath, "AppData", "Articles", fileName);
+            string data = System.IO.File.ReadAllText(filePath);
+            return data;
+        }
+
 
     }
 }

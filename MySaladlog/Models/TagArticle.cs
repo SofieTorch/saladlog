@@ -17,7 +17,7 @@ namespace MySaladlog.Models
         public short IdArticle { get; set; }
         [Key]
         [Column("idTagArticle")]
-        public int IdTagArticle { get; set; }
+        public short IdTagArticle { get; set; }
 
         [ForeignKey(nameof(IdArticle))]
         [InverseProperty(nameof(Article.TagArticles))]

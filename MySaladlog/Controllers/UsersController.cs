@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,12 +15,13 @@ namespace MySaladlog
     public class UsersController : Controller
     {
         private readonly SaladlogContext _context;
+        private readonly IWebHostEnvironment _webHost;
 
-        public UsersController(SaladlogContext context)
+        public UsersController(SaladlogContext context, IWebHostEnvironment webHost)
         {
             _context = context;
+            _webHost = webHost;
         }
-        
 
         [HttpGet]
         public IActionResult Login()
@@ -122,16 +125,24 @@ namespace MySaladlog
 
         public void LoadArticleView()
         {
+            List<Tag> tags = _context.Tags.ToList();
+            ViewBag.listTags = tags;
             List<Article> articles = _context.Articles.ToList();
             List<User> users = _context.Users.ToList();
 
             var dataArticle = from a in articles
                               join u in users on a.IdUser equals u.IdUser
-                              select new ArticleDataView(a.CreateDate, a.Title, "Hamas gano combinando una fuerte resistencia contra la ocupacion militar con la creacion de organizaciones sociales de base y de servicio a los pobres, una plataforma y una practica que probablemente haria ganar votos en cualquier lugar. La victoria electoral de Hamas es ominosa pero comprensible, a la luz de los acontecimientos. Es enteramente justo describir a Hamas como fundamentalista, extremista y violentista, y como una seria amenaza a la paz y a un acuerdo politicamente justo. Sin embargo, es útil recordar que en aspectos importantes, Hamas no es tan extremista como otros. Por ejemplo, declara que estaría de acuerdo con una tregua con Israel sobre la base de la frontera reconocida a nivel internacional antes de la guerra arabe-israeli de junio de l967. ..", u.FirstName + " +" + u.LastName);
+                              select new ArticleDataView(a.CreateDate, a.Title, FileContentPath(a.Path), u.FirstName + " " + u.LastName);
 
-            ViewBag.ListArticlesIndex = dataArticle.ToList();
+            ViewBag.ListArticlesFeed = dataArticle.ToList();
         }
 
+        protected string FileContentPath(string fileName)
+        {
+            string filePath = Path.Combine(_webHost.ContentRootPath, "AppData", "Articles", fileName);
+            string data = System.IO.File.ReadAllText(filePath);
+            return data;
+        }
 
         public IActionResult SignOuts()
         {
